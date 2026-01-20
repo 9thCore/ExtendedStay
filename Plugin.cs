@@ -1,5 +1,8 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
+using ExtendedStay.Patch;
+using HarmonyLib;
+using System.Reflection;
 
 namespace ExtendedStay
 {
@@ -18,6 +21,9 @@ namespace ExtendedStay
             // Plugin startup logic
             Logger = base.Logger;
             Instance = this;
+
+            Harmony harmony = new(MyPluginInfo.PLUGIN_GUID);
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             Logger.LogInfo($"{MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} successfully loaded.");
         }
