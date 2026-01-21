@@ -12,9 +12,14 @@ namespace ExtendedStay.Functionality.Settings
 
             while (Advance())
             {
+                if (!ValidLine)
+                {
+                    continue;
+                }
+
                 switch (Method)
                 {
-                    case "Variable":
+                    case "variable":
                         if (ParameterCount == 1
                             && TryGetStringParameter(out string variableName))
                         {

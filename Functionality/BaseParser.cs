@@ -1,4 +1,6 @@
-﻿namespace ExtendedStay.Functionality
+﻿using ExtendedStay.Util;
+
+namespace ExtendedStay.Functionality
 {
     public abstract class BaseParser
     {
@@ -26,8 +28,14 @@
                 return false;
             }
 
-            currentLineTokens = currentLines[lineIndex].Split(' ', '\t');
-            tokenIndex = 1;
+            currentLineTokens = currentLines[lineIndex].Tokenise();
+
+            if (ValidLine)
+            {
+                currentLineTokens[0] = currentLineTokens[0].ToLower();
+                tokenIndex = 1;
+            }
+
             return true;
         }
 
@@ -55,6 +63,7 @@
             return float.TryParse(parameterString, out parameter);
         }
 
+        protected bool ValidLine => currentLineTokens.Length > 0;
         protected string Method => currentLineTokens[0];
         protected int ParameterCount => currentLineTokens.Length - 1;
 

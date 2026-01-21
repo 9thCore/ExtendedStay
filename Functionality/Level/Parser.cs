@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using UnityEngine;
 
 namespace ExtendedStay.Functionality.Level
@@ -15,65 +16,125 @@ namespace ExtendedStay.Functionality.Level
 
             while (Advance())
             {
+                if (!ValidLine)
+                {
+                    continue;
+                }
+
                 switch (Method)
                 {
-                    case "Hash":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out factory.hash))
+                    case "hash":
+                        if (ParameterCount != 1)
                         {
-                            //
+                            Plugin.LogError("Method Hash() requires one parameter");
+                            break;
+                        }
+
+                        if (!TryGetStringParameter(out factory.hash))
+                        {
+                            Plugin.LogError("First parameter of Hash() must be a string");
+                            break;
                         }
 
                         break;
-                    case "Name":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out factory.name))
+                    case "name":
+                        if (ParameterCount != 1)
                         {
-                            //
+                            Plugin.LogError("Method Name() requires one parameter");
+                            break;
+                        }
+
+                        if (!TryGetStringParameter(out factory.name))
+                        {
+                            Plugin.LogError("First parameter of Name() must be a string");
+                            break;
                         }
 
                         break;
-                    case "Act":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out factory.act))
+                    case "act":
+                        if (ParameterCount != 1)
                         {
-                            //
+                            Plugin.LogError("Method Act() requires one parameter");
+                            break;
+                        }
+
+                        if (!TryGetStringParameter(out factory.act))
+                        {
+                            Plugin.LogError("First parameter of Act() must be a string");
+                            break;
                         }
 
                         break;
-                    case "Level":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out factory.level))
+                    case "level":
+                        if (ParameterCount != 1)
                         {
-                            //
+                            Plugin.LogError("Method Level() requires one parameter");
+                            break;
+                        }
+
+                        if (!TryGetStringParameter(out factory.level))
+                        {
+                            Plugin.LogError("First parameter of Level() must be a string");
+                            break;
                         }
 
                         break;
-                    case "Position":
-                        if (ParameterCount == 2
-                            && TryGetFloatParameter(out float x)
-                            && TryGetFloatParameter(out float y))
+                    case "position":
+                        if (ParameterCount != 2)
                         {
-                            factory.position = new Vector2(x, y);
+                            Plugin.LogError("Method Position() requires two parameters");
+                            break;
                         }
 
+                        if (!TryGetFloatParameter(out float x))
+                        {
+                            Plugin.LogError("First parameter of Position() must be a float");
+                            break;
+                        }
+
+                        if (!TryGetFloatParameter(out float y))
+                        {
+                            Plugin.LogError("Second parameter of Position() must be a float");
+                            break;
+                        }
+
+                        factory.position = new(x, y);
                         break;
-                    case "Character":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out string characterName)
-                            && Enum.TryParse(characterName, out Character character))
+                    case "character":
+                        if (ParameterCount != 1)
                         {
-                            factory.character = character;
+                            Plugin.LogError("Method Character() requires one parameter");
+                            break;
                         }
 
+                        if (!TryGetStringParameter(out string characterName))
+                        {
+                            Plugin.LogError("First parameter of Character() must be a string");
+                            break;
+                        }
+
+                        if (!Enum.TryParse(characterName, true, out Character character))
+                        {
+                            Plugin.LogError($"{characterName} is not a valid character");
+                            break;
+                        }
+
+                        factory.character = character;
                         break;
-                    case "CustomCharacter":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out factory.customCharacter))
+                    case "customcharacter":
+                        if (ParameterCount != 1)
                         {
-                            //
+                            Plugin.LogError("Method Character() requires one parameter");
+                            break;
                         }
 
+                        if (!TryGetStringParameter(out string customCharacter))
+                        {
+                            Plugin.LogError("First parameter of Character() must be a string");
+                            break;
+                        }
+
+                        factory.customCharacter = customCharacter;
                         break;
                 }
             }
