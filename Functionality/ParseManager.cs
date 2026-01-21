@@ -15,12 +15,13 @@ namespace ExtendedStay.Functionality
             }
         }
 
-        public void Parse(string text)
+        public bool TryParse(string text, out FailureReason reason)
         {
             Match match = ModuleMatcher.Match(text);
             if (!match.Success)
             {
-                return;
+                reason = FailureReason.NoMatch;
+                return false;
             }
 
             string identifier = match.Groups[1].Value;
@@ -28,8 +29,19 @@ namespace ExtendedStay.Functionality
             if (registeredManagers.TryGetValue(identifier, out BaseParser manager))
             {
                 string restOfTheOwl = match.Groups[2].Value;
-                manager.Parse(restOfTheOwl);
+                return manager.TryParse(restOfTheOwl, out reason);
             }
+
+            reason = FailureReason.InvalidManager;
+            return false;
+        }
+
+        public enum FailureReason
+        {
+            NoFailure,
+            NoMatch,
+            InvalidManager,
+            InvalidEvent
         }
 
         private ParseManager()

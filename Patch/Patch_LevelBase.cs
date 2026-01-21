@@ -1,5 +1,4 @@
 ﻿using ExtendedStay.Functionality;
-using ExtendedStay.Functionality.Settings;
 using HarmonyLib;
 using RDLevelEditor;
 
@@ -13,13 +12,18 @@ namespace ExtendedStay.Patch
         {
             private static void Prefix(LevelBase __instance)
             {
-                Storage.Instance.Clear();
+                Functionality.Settings.Storage.Instance.Clear();
+                Functionality.Level.Storage.Instance.Clear();
 
                 foreach (LevelEvent_Base levelEvent in __instance.levelEvents)
                 {
                     if (levelEvent is LevelEvent_Comment comment)
                     {
-                        ParseManager.Instance.Parse(comment.text);
+                        if (!ParseManager.Instance.TryParse(comment.text, out ParseManager.FailureReason reason)
+                            && reason != ParseManager.FailureReason.NoMatch)
+                        {
+                            Plugin.LogError($"Failure ({reason}) reading comment at bar {comment.bar}, beat {comment.beat}. Full comment text is:\n{comment.text}");
+                        }
                     }
                 }
             }

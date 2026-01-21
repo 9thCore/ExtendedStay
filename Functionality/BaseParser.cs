@@ -4,7 +4,7 @@
     {
         public abstract string Identifier { get; }
 
-        public abstract void Parse(string text);
+        public abstract bool TryParse(string text, out ParseManager.FailureReason reason);
 
         protected void ParseLines(string text)
         {

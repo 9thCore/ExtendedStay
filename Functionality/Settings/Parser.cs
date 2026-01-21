@@ -6,7 +6,7 @@ namespace ExtendedStay.Functionality.Settings
     {
         public override string Identifier => "SETTINGS";
 
-        public override void Parse(string text)
+        public override bool TryParse(string text, out ParseManager.FailureReason reason)
         {
             ParseLines(text);
 
@@ -25,6 +25,9 @@ namespace ExtendedStay.Functionality.Settings
                         break;
                 }
             }
+
+            reason = default;
+            return true;
         }
     }
 }
