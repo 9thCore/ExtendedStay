@@ -13,6 +13,11 @@ namespace ExtendedStay.Patch
         {
             private static void Prefix(scnGame __instance)
             {
+                if (!Controller.Instance.areThereAnyModComments)
+                {
+                    return;
+                }
+
                 Storage.Instance.OnLevelLoad(__instance.currentLevel);
 
                 if (Controller.Instance.TrySetupLevels())

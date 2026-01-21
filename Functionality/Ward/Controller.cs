@@ -80,6 +80,8 @@ namespace ExtendedStay.Functionality.Ward
 
         public ISelectable Selected => selectables[selectedIndex];
 
+        public bool areThereAnyModComments = false;
+
         private void SelectNext(Direction direction)
         {
             int sign = (int) direction;
