@@ -16,6 +16,7 @@ namespace ExtendedStay.Functionality.Ward
         }
 
         public Vector2 Position => transform.position;
+        public Vector2 DescriptionPosition => new(Position.x + data.descriptionOffset.x - scrVfxControl.instance.RDWidth / 2f, data.descriptionOffset.y);
 
         public Level(LevelStorage.Data data) : base(data.character, data.customCharacter)
         {

@@ -58,9 +58,15 @@ namespace ExtendedStay.Functionality.Ward
             return true;
         }
 
+        public void SetupSelectors()
+        {
+            levelDescription.Setup();
+        }
+
         public void Update()
         {
-            if (!successfulLoad)
+            if (!successfulLoad
+                || scnGame.instance.paused)
             {
                 return;
             }
@@ -135,6 +141,7 @@ namespace ExtendedStay.Functionality.Ward
         private void Select(int index)
         {
             selectedIndex = index;
+            levelDescription.Update(Selected);
         }
 
         private enum Direction
@@ -143,10 +150,15 @@ namespace ExtendedStay.Functionality.Ward
             Right = 1
         }
 
+        private readonly Description levelDescription = new();
+
         private readonly List<Level> levels = new();
         private readonly List<ISelectable> selectables = new();
         private readonly List<IObject> objects = new();
+
         private int selectedIndex = 0;
         private bool successfulLoad = false;
+
+        private bool currentlyDayShift = true;
     }
 }

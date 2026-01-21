@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ExtendedStay.Util;
+using System;
 using System.Text;
 using UnityEngine;
 
@@ -115,7 +116,7 @@ namespace ExtendedStay.Functionality.Level
 
                         if (!Enum.TryParse(characterName, true, out Character character))
                         {
-                            Plugin.LogError($"{characterName} is not a valid character");
+                            Plugin.LogError($"{characterName} is not a valid character, must be one of {EnumUtil.ListValues<Character>()}");
                             break;
                         }
 
@@ -135,6 +136,57 @@ namespace ExtendedStay.Functionality.Level
                         }
 
                         factory.customCharacter = customCharacter;
+                        break;
+                    case "leveltype":
+                        if (ParameterCount != 1)
+                        {
+                            Plugin.LogError("Method LevelType() requires one parameter");
+                            break;
+                        }
+
+                        if (!TryGetStringParameter(out string levelTypeString))
+                        {
+                            Plugin.LogError("First parameter of LevelType() must be a string");
+                            break;
+                        }
+
+                        if (!Enum.TryParse(levelTypeString, true, out Storage.LevelType levelType))
+                        {
+                            Plugin.LogError($"{levelTypeString} is not a valid level type, must be one of {EnumUtil.ListValues<Storage.LevelType>()}");
+                            break;
+                        }
+
+                        factory.levelType = levelType;
+                        break;
+                    case "dontuserank":
+                        if (ParameterCount != 0)
+                        {
+                            Plugin.LogError("Method Character() requires no parameters");
+                            break;
+                        }
+
+                        factory.dontUseRank = true;
+                        break;
+                    case "descriptionoffset":
+                        if (ParameterCount != 2)
+                        {
+                            Plugin.LogError("Method DescriptionOffset() requires two parameters");
+                            break;
+                        }
+
+                        if (!TryGetFloatParameter(out float offsetX))
+                        {
+                            Plugin.LogError("First parameter of DescriptionOffset() must be a float");
+                            break;
+                        }
+
+                        if (!TryGetFloatParameter(out float offsetY))
+                        {
+                            Plugin.LogError("Second parameter of DescriptionOffset() must be a float");
+                            break;
+                        }
+
+                        factory.descriptionOffset = new Vector2(offsetX, offsetY).AsPercent();
                         break;
                 }
             }

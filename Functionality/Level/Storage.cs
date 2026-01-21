@@ -31,6 +31,9 @@ namespace ExtendedStay.Functionality.Level
             public Vector2 position = new(50, 50);
             public Character character = Character.Samurai;
             public string customCharacter = string.Empty;
+            public LevelType levelType = LevelType.Normal;
+            public bool dontUseRank = false;
+            public Vector2 descriptionOffset = Vector2.zero;
 
             public Status Register()
             {
@@ -50,7 +53,8 @@ namespace ExtendedStay.Functionality.Level
 
             private Data Build()
             {
-                return new Data(hash, name, act, level, position, character, customCharacter);
+                return new Data(hash, name, act, level, position, character, customCharacter,
+                    levelType, dontUseRank, descriptionOffset);
             }
 
             public enum Status
@@ -61,7 +65,7 @@ namespace ExtendedStay.Functionality.Level
         }
 
         public readonly record struct Data(string hash, string name, string act, string level, Vector2 position,
-            Character character, string customCharacter)
+            Character character, string customCharacter, LevelType levelType, bool dontUseRank, Vector2 descriptionOffset)
         {
             public readonly string hash = hash;
             public readonly string name = name;
@@ -71,6 +75,19 @@ namespace ExtendedStay.Functionality.Level
 
             public readonly Character character = character;
             public readonly string customCharacter = customCharacter;
+
+            public readonly LevelType levelType = levelType;
+            public readonly bool dontUseRank = dontUseRank;
+
+            public readonly Vector2 descriptionOffset = descriptionOffset;
+        }
+
+        public enum LevelType
+        {
+            Normal,
+            Boss,
+            Intermission,
+            Bonus
         }
 
         private void Register(Data data)
