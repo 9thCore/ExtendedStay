@@ -47,6 +47,7 @@ namespace ExtendedStay.Functionality
         private ParseManager()
         {
             Register(new Settings.Parser());
+            Register(new Level.Parser());
         }
 
         private void Register(BaseParser manager)
