@@ -22,7 +22,7 @@ namespace ExtendedStay.Functionality.Ward
             }
         }
 
-        public bool TrySetupLevels()
+        public void Clear()
         {
             foreach (IObject obj in objects)
             {
@@ -33,7 +33,10 @@ namespace ExtendedStay.Functionality.Ward
             levels.Clear();
             objects.Clear();
             selectables.Clear();
+        }
 
+        public bool TrySetupLevels()
+        {
             foreach (LevelStorage.Data data in LevelStorage.Instance.LevelData)
             {
                 Level level = new(data);
@@ -50,6 +53,7 @@ namespace ExtendedStay.Functionality.Ward
                 return false;
             }
 
+            Select(0);
             successfulLoad = true;
             return true;
         }

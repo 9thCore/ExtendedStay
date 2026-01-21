@@ -20,6 +20,7 @@ namespace ExtendedStay.Patch
 
                 Storage.Instance.OnLevelLoad(__instance.currentLevel);
 
+                Controller.Instance.Clear();
                 if (Controller.Instance.TrySetupLevels())
                 {
 
