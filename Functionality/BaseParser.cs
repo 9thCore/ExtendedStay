@@ -66,6 +66,7 @@ namespace ExtendedStay.Functionality
         protected bool ValidLine => currentLineTokens.Length > 0;
         protected string Method => currentLineTokens[0];
         protected int ParameterCount => currentLineTokens.Length - 1;
+        protected string CurrentLine => currentLines[lineIndex];
 
         private string[] currentLineTokens = null;
         private string[] currentLines = null;

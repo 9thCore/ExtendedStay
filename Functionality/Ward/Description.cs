@@ -6,6 +6,7 @@ using UnityEngine.UI;
 namespace ExtendedStay.Functionality.Ward
 {
     using LevelStorage = Functionality.Level.Storage;
+    using LocaleStorage = Functionality.Locale.Storage;
 
     public class Description
     {
@@ -77,7 +78,9 @@ namespace ExtendedStay.Functionality.Ward
             }
 
             description.Append($"<color={scnLevelSelect.idColor}>{level.Data.act}-{level.Data.level}</color> ");
-            description.Append($"<color={scnLevelSelect.levelNameColor}>{level.Data.name}</color>\n");
+
+            string localisedName = LocaleStorage.Instance.GetLocalised(level.Data.name);
+            description.Append($"<color={scnLevelSelect.levelNameColor}>{localisedName}</color>\n");
 
             Rank rank = RankUtil.GetHighestRank(level.Data.hash);
             if (rank == Rank.NotFinished)
