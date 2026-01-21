@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using RDLevelEditor;
+using System.Collections;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
 using UnityEngine;
 
 namespace ExtendedStay.Functionality.Ward
@@ -49,12 +53,11 @@ namespace ExtendedStay.Functionality.Ward
             if (levels.Count == 0)
             {
                 Plugin.LogError("No levels found. Cannot proceed with loading.");
-                successfulLoad = false;
+                enabled = false;
                 return false;
             }
 
             Select(0);
-            successfulLoad = true;
             return true;
         }
 
@@ -65,7 +68,8 @@ namespace ExtendedStay.Functionality.Ward
 
         public void Update()
         {
-            if (!successfulLoad
+            if (!areThereAnyModComments
+                || levelLoading
                 || scnGame.instance.paused)
             {
                 return;
@@ -73,7 +77,7 @@ namespace ExtendedStay.Functionality.Ward
 
             if (RDInput.anyPlayerPress)
             {
-
+                Interact();
             }
             else
             {
@@ -144,6 +148,79 @@ namespace ExtendedStay.Functionality.Ward
             levelDescription.Update(Selected);
         }
 
+        private void Interact()
+        {
+            if (Selected is not Level level)
+            {
+                return;
+            }
+
+            TryStartLevel(level);
+        }
+
+        private void TryStartLevel(Level level)
+        {
+            levelLoading = true;
+
+            if (DesktopLevelLoader.cacheLevelsDict == null)
+            {
+                DesktopLevelLoader.InitializeCacheLevelsDict();
+            }
+
+            foreach (KeyValuePair<string, RDLevelSettings> keyValuePair in DesktopLevelLoader.cacheLevelsDict)
+            {
+                CustomLevelData data = new()
+                {
+                    settings = keyValuePair.Value
+                };
+
+                if (data.Hash == level.Data.hash)
+                {
+                    string relative = keyValuePair.Key.Substring("Local/".Length);
+                    string directory = Path.Combine(LevelValidation.CustomLevelsPath, relative);
+
+                    if (Directory.Exists(directory))
+                    {
+                        string file = Path.Combine(directory, data.settings.mainRDLevelRelativePath);
+
+                        if (!string.IsNullOrEmpty(file) && RDFile.Exists(file))
+                        {
+                            StartCoroutine(DoLevelLoadTransitionAndGotoLevel(file));
+                            return;
+                        }
+                    }
+                }
+            }
+
+            Plugin.LogError($"Could not find level with hash {level.Data.hash}");
+            levelLoading = false;
+        }
+
+        private IEnumerator DoLevelLoadTransitionAndGotoLevel(string file)
+        {
+            scrVfxControl.instance.Flash(-1, 1f, 1f);
+
+            yield return new WaitForSecondsRealtime(1f);
+
+            scrQuad scrQuad = scrVfxControl.instance.GetRoomOverlay(-1);
+            scrQuad.TweenColorFromTo(Color.black.WithAlpha(0f), Color.black, 1f);
+
+            yield return new WaitForSecondsRealtime(1f);
+
+            scrVfxControl.instance.FlashTextUIInstant("LOADING...", flash: false);
+
+            yield return null;
+
+            if (!RDFile.Exists(file))
+            {
+                Plugin.LogError($"level at {file} was removed while loading lol");
+                yield break;
+            }
+
+            scnBase.GoToLevelWithExternalPath(file);
+            yield break;
+        }
+
         private enum Direction
         {
             Left = -1,
@@ -157,8 +234,9 @@ namespace ExtendedStay.Functionality.Ward
         private readonly List<IObject> objects = new();
 
         private int selectedIndex = 0;
-        private bool successfulLoad = false;
 
         private bool currentlyDayShift = true;
+
+        private bool levelLoading = false;
     }
 }

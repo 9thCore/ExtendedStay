@@ -15,8 +15,11 @@ namespace ExtendedStay.Patch
             {
                 if (!Controller.Instance.areThereAnyModComments)
                 {
+                    Controller.Instance.enabled = false;
                     return;
                 }
+
+                Controller.Instance.enabled = true;
 
                 Storage.Instance.OnLevelLoad(__instance.currentLevel);
 
