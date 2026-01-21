@@ -43,6 +43,18 @@
             return true;
         }
 
+        protected bool TryGetFloatParameter(out float parameter)
+        {
+            if (tokenIndex >= currentLineTokens.Length)
+            {
+                parameter = default;
+                return false;
+            }
+
+            string parameterString = currentLineTokens[tokenIndex++];
+            return float.TryParse(parameterString, out parameter);
+        }
+
         protected string Method => currentLineTokens[0];
         protected int ParameterCount => currentLineTokens.Length - 1;
 
