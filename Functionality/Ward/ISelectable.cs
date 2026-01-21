@@ -2,7 +2,7 @@
 
 namespace ExtendedStay.Functionality.Ward
 {
-    internal interface ISelectable
+    public interface ISelectable
     {
         public Vector2 Position { get; }
 

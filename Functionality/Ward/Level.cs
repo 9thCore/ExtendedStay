@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using ExtendedStay.Util;
+using UnityEngine;
 
 namespace ExtendedStay.Functionality.Ward
 {
     using LevelStorage = Functionality.Level.Storage;
 
-    public class Level : ISelectable
+    public class Level : SpriteHolder, ISelectable, IObject
     {
         public LevelStorage.Data Data
         {
@@ -12,18 +13,15 @@ namespace ExtendedStay.Functionality.Ward
             {
                 return data;
             }
-            set
-            {
-                data = value;
-            }
         }
 
-        public Level()
+        public Vector2 Position => transform.position;
+
+        public Level(LevelStorage.Data data) : base(data.character, data.customCharacter)
         {
-            
+            this.data = data;
+            transform.position = data.position.AsPercent();
         }
-
-        public Vector2 Position => data.position;
 
         public void OnHover()
         {
@@ -35,6 +33,11 @@ namespace ExtendedStay.Functionality.Ward
 
         }
 
-        private LevelStorage.Data data;
+        public void Destroy()
+        {
+            CleanUp();
+        }
+
+        private readonly LevelStorage.Data data;
     }
 }

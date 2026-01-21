@@ -24,36 +24,13 @@ namespace ExtendedStay.Functionality.Level
 
         public class Factory
         {
-            private string hash = null;
-            private string name = "Unnamed";
-            private string act = "1";
-            private string level = "1";
-            private Vector2 position = new(50, 50);
-
-            public void SetHash(string hash)
-            {
-                this.hash = hash;
-            }
-
-            public void SetName(string name)
-            {
-                this.name = name;
-            }
-
-            public void SetAct(string act)
-            {
-                this.act = act;
-            }
-
-            public void SetLevel(string level)
-            {
-                this.level = level;
-            }
-
-            public void SetPosition(Vector2 position)
-            {
-                this.position = position;
-            }
+            public string hash = null;
+            public string name = "Unnamed";
+            public string act = "1";
+            public string level = "1";
+            public Vector2 position = new(50, 50);
+            public Character character = Character.Samurai;
+            public string customCharacter = string.Empty;
 
             public Status Register()
             {
@@ -73,7 +50,7 @@ namespace ExtendedStay.Functionality.Level
 
             private Data Build()
             {
-                return new Data(hash, name, act, level, position);
+                return new Data(hash, name, act, level, position, character, customCharacter);
             }
 
             public enum Status
@@ -83,8 +60,8 @@ namespace ExtendedStay.Functionality.Level
             }
         }
 
-        public readonly record struct Data(string hash, string name,
-            string act, string level, Vector2 position)
+        public readonly record struct Data(string hash, string name, string act, string level, Vector2 position,
+            Character character, string customCharacter)
         {
             public readonly string hash = hash;
             public readonly string name = name;
@@ -92,7 +69,8 @@ namespace ExtendedStay.Functionality.Level
             public readonly string level = level;
             public readonly Vector2 position = position;
 
-            public readonly Character character = Character.LuckyBaseball;
+            public readonly Character character = character;
+            public readonly string customCharacter = customCharacter;
         }
 
         private void Register(Data data)

@@ -24,18 +24,22 @@ namespace ExtendedStay.Functionality.Ward
 
         public bool TrySetupLevels()
         {
+            foreach (IObject obj in objects)
+            {
+                obj.Destroy();
+            }
+
             selectedIndex = 0;
             levels.Clear();
+            objects.Clear();
             selectables.Clear();
 
             foreach (LevelStorage.Data data in LevelStorage.Instance.LevelData)
             {
-                Level level = new()
-                {
-                    Data = data
-                };
+                Level level = new(data);
 
                 levels.Add(level);
+                objects.Add(level);
                 selectables.Add(level);
             }
 
@@ -59,7 +63,7 @@ namespace ExtendedStay.Functionality.Ward
 
             if (RDInput.anyPlayerPress)
             {
-                Plugin.LogInfo($"TODO play level");
+
             }
             else
             {
@@ -135,6 +139,7 @@ namespace ExtendedStay.Functionality.Ward
 
         private readonly List<Level> levels = new();
         private readonly List<ISelectable> selectables = new();
+        private readonly List<IObject> objects = new();
         private int selectedIndex = 0;
         private bool successfulLoad = false;
     }

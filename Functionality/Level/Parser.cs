@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace ExtendedStay.Functionality.Level
 {
@@ -18,33 +19,33 @@ namespace ExtendedStay.Functionality.Level
                 {
                     case "Hash":
                         if (ParameterCount == 1
-                            && TryGetStringParameter(out string hash))
+                            && TryGetStringParameter(out factory.hash))
                         {
-                            factory.SetHash(hash);
+                            //
                         }
 
                         break;
                     case "Name":
                         if (ParameterCount == 1
-                            && TryGetStringParameter(out string name))
+                            && TryGetStringParameter(out factory.name))
                         {
-                            factory.SetName(name);
+                            //
                         }
 
                         break;
                     case "Act":
                         if (ParameterCount == 1
-                            && TryGetStringParameter(out string act))
+                            && TryGetStringParameter(out factory.act))
                         {
-                            factory.SetAct(act);
+                            //
                         }
 
                         break;
                     case "Level":
                         if (ParameterCount == 1
-                            && TryGetStringParameter(out string level))
+                            && TryGetStringParameter(out factory.level))
                         {
-                            factory.SetLevel(level);
+                            //
                         }
 
                         break;
@@ -53,7 +54,24 @@ namespace ExtendedStay.Functionality.Level
                             && TryGetFloatParameter(out float x)
                             && TryGetFloatParameter(out float y))
                         {
-                            factory.SetPosition(new Vector2(x, y));
+                            factory.position = new Vector2(x, y);
+                        }
+
+                        break;
+                    case "Character":
+                        if (ParameterCount == 1
+                            && TryGetStringParameter(out string characterName)
+                            && Enum.TryParse(characterName, out Character character))
+                        {
+                            factory.character = character;
+                        }
+
+                        break;
+                    case "CustomCharacter":
+                        if (ParameterCount == 1
+                            && TryGetStringParameter(out factory.customCharacter))
+                        {
+                            //
                         }
 
                         break;
