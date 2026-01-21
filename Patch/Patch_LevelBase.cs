@@ -20,7 +20,8 @@ namespace ExtendedStay.Patch
 
                 foreach (LevelEvent_Base levelEvent in __instance.levelEvents)
                 {
-                    if (levelEvent is LevelEvent_Comment comment)
+                    if (levelEvent.active
+                        && levelEvent is LevelEvent_Comment comment)
                     {
                         if (ParseManager.Instance.TryParse(comment.text, out ParseManager.FailureReason reason))
                         {
