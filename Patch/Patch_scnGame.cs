@@ -1,4 +1,5 @@
 ﻿using ExtendedStay.Functionality.Settings;
+using ExtendedStay.Functionality.Ward;
 using HarmonyLib;
 using RDLevelEditor;
 
@@ -13,6 +14,11 @@ namespace ExtendedStay.Patch
             private static void Prefix(scnGame __instance)
             {
                 Storage.Instance.OnLevelLoad(__instance.currentLevel);
+
+                if (Controller.Instance.TrySetupLevels())
+                {
+
+                }
 
                 if (scnEditor.instance != null)
                 {
