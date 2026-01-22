@@ -67,9 +67,7 @@ namespace ExtendedStay.Functionality.Ward
 
         public void Update()
         {
-            if (!areThereAnyModComments
-                || levelLoading
-                || scnGame.instance.paused)
+            if (!InteractionEnabled())
             {
                 return;
             }
@@ -94,6 +92,24 @@ namespace ExtendedStay.Functionality.Ward
         public ISelectable Selected => selectables[selectedIndex];
 
         public bool areThereAnyModComments = false;
+
+        private bool InteractionEnabled()
+        {
+            if (!areThereAnyModComments
+                || levelLoading
+                || scnGame.instance.paused)
+            {
+                return false;
+            }
+
+            if (scnEditor.instance != null
+                && scnEditor.instance.selectedControls.Count > 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         private void SelectNext(Direction direction)
         {
