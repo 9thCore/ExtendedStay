@@ -40,13 +40,23 @@ namespace ExtendedStay.Functionality.Ward
 
         public bool TrySetupLevels()
         {
+            int selectedIndex = 0;
+            int index = 0;
+
             foreach (LevelStorage.Data data in LevelStorage.Instance.LevelData)
             {
+                if (data.Hash == PersistentData.SelectedHash)
+                {
+                    selectedIndex = index;
+                }
+
                 Level level = new(data);
 
                 levels.Add(level);
                 objects.Add(level);
                 selectables.Add(level);
+
+                index++;
             }
 
             if (levels.Count == 0)
@@ -56,7 +66,7 @@ namespace ExtendedStay.Functionality.Ward
                 return false;
             }
 
-            Select(0);
+            Select(selectedIndex);
             return true;
         }
 
@@ -90,14 +100,14 @@ namespace ExtendedStay.Functionality.Ward
         }
 
         public ISelectable Selected => selectables[selectedIndex];
-
         public bool areThereAnyModComments = false;
 
         private bool InteractionEnabled()
         {
             if (!areThereAnyModComments
                 || levelLoading
-                || scnGame.instance.paused)
+                || scnGame.instance.paused
+                || !scnGame.instance.receptive)
             {
                 return false;
             }
@@ -204,7 +214,7 @@ namespace ExtendedStay.Functionality.Ward
 
                         if (!string.IsNullOrEmpty(file) && RDFile.Exists(file))
                         {
-                            StartCoroutine(DoLevelLoadTransitionAndGotoLevel(file));
+                            StartCoroutine(DoLevelLoadTransitionAndGotoLevel(level, file));
                             return;
                         }
                     }
@@ -215,7 +225,7 @@ namespace ExtendedStay.Functionality.Ward
             levelLoading = false;
         }
 
-        private IEnumerator DoLevelLoadTransitionAndGotoLevel(string file)
+        private IEnumerator DoLevelLoadTransitionAndGotoLevel(Level level, string file)
         {
             scrVfxControl.instance.Flash(-1, 1f, 1f);
 
@@ -236,6 +246,8 @@ namespace ExtendedStay.Functionality.Ward
                 yield break;
             }
 
+            PersistentData.Collect(level.Data.Hash);
+            scrVfxControl.FlushCustomLevelData();
             scnBase.GoToLevelWithExternalPath(file);
             yield break;
         }

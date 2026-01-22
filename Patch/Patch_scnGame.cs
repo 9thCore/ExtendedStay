@@ -23,6 +23,7 @@ namespace ExtendedStay.Patch
 
                 Storage.Instance.OnLevelLoad(__instance.currentLevel);
 
+                PersistentData.Clear();
                 Controller.Instance.Clear();
                 Controller.Instance.SetupSelectors();
 
