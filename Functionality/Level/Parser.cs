@@ -39,6 +39,15 @@ namespace ExtendedStay.Functionality.Level
         [CommentMethod]
         public void DescriptionOffset(float x, float y) => factory.descriptionOffset = new Vector2(x, y);
 
+        [CommentMethod]
+        public void PerfectExpression(string expression) => factory.perfectExpression = expression;
+
+        [CommentMethod]
+        public void FailExpression(string expression) => factory.failExpression = expression;
+
+        [CommentMethod]
+        public void UnplayedExpression(string expression) => factory.unplayedExpression = expression;
+
         protected override void OnStartParse()
         {
             factory = new();
