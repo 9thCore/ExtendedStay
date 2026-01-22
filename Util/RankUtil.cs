@@ -23,5 +23,10 @@
 
             return compA > compB ? a : b;
         }
+
+        public static bool Unplayed(this Rank rank)
+        {
+            return rank == Rank.NotFinished;
+        }
     }
 }

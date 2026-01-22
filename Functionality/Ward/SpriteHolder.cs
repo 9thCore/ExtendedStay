@@ -45,10 +45,12 @@ namespace ExtendedStay.Functionality.Ward
 
         protected void PlayExpression(string expression, float speed = 1f)
         {
-            if (animation.data.clips.TryGetValue(expression, out CustomAnimationClip clip))
+            if (expression == null)
             {
-                animation.PlayFromClip(clip, speed, 0f, 0f);
+                return;
             }
+
+            sprite.PlayExpression(expression, speed);
         }
 
         protected void CleanUp()

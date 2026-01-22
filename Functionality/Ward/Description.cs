@@ -58,7 +58,7 @@ namespace ExtendedStay.Functionality.Ward
             StringBuilder description = new();
             StringBuilder narration = new();
 
-            switch (level.Data.levelType)
+            switch (level.Data.LevelType)
             {
                 case LevelStorage.LevelType.Boss:
                     description.Append($"<color={scnLevelSelect.highlightColor}>{RDString.Get("levelSelect.boss").Replace("[tier]", "").Trim()}</color>\n\n");
@@ -77,19 +77,19 @@ namespace ExtendedStay.Functionality.Ward
                     break;
             }
 
-            description.Append($"<color={scnLevelSelect.idColor}>{level.Data.act}-{level.Data.level}</color> ");
+            description.Append($"<color={scnLevelSelect.idColor}>{level.Data.Act}-{level.Data.Level}</color> ");
 
-            string localisedName = LocaleStorage.Instance.GetLocalised(level.Data.name);
+            string localisedName = LocaleStorage.Instance.GetLocalised(level.Data.Name);
             description.Append($"<color={scnLevelSelect.levelNameColor}>{localisedName}</color>\n");
 
-            Rank rank = RankUtil.GetHighestRank(level.Data.hash);
+            Rank rank = level.CurrentRank;
             if (rank == Rank.NotFinished)
             {
-                description.Append($"{(level.Data.dontUseRank ? RDString.Get("levelSelect.incomplete") : RDString.Get("levelSelect.unplayed"))}");
+                description.Append($"{(level.Data.DontUseRank ? RDString.Get("levelSelect.incomplete") : RDString.Get("levelSelect.unplayed"))}");
             }
             else
             {
-                if (level.Data.dontUseRank)
+                if (level.Data.DontUseRank)
                 {
                     if (rank.perfected)
                     {

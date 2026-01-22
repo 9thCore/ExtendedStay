@@ -160,11 +160,15 @@ namespace ExtendedStay.Functionality.Ward
         private void Select(int index)
         {
             selectedIndex = index;
+
             levelDescription.Update(Selected);
+            Selected.OnHover();
         }
 
         private void Interact()
         {
+            Selected.OnInteract();
+
             if (Selected is not Level level)
             {
                 return;
@@ -189,7 +193,7 @@ namespace ExtendedStay.Functionality.Ward
                     settings = keyValuePair.Value
                 };
 
-                if (data.Hash == level.Data.hash)
+                if (data.Hash == level.Data.Hash)
                 {
                     string relative = keyValuePair.Key.Substring("Local/".Length);
                     string directory = Path.Combine(LevelValidation.CustomLevelsPath, relative);
@@ -207,7 +211,7 @@ namespace ExtendedStay.Functionality.Ward
                 }
             }
 
-            Plugin.LogError($"Could not find level with hash {level.Data.hash}");
+            Plugin.LogError($"Could not find level with hash {level.Data.Hash}");
             levelLoading = false;
         }
 
@@ -250,8 +254,14 @@ namespace ExtendedStay.Functionality.Ward
 
         private int selectedIndex = 0;
 
-        private bool currentlyDayShift = true;
+        private Shift currentShift = Shift.DayShift;
 
         private bool levelLoading = false;
+
+        private enum Shift
+        {
+            DayShift,
+            NightShift
+        }
     }
 }

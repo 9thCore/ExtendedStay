@@ -35,6 +35,9 @@ namespace ExtendedStay.Functionality.Level
             public LevelType levelType = LevelType.Normal;
             public bool dontUseRank = false;
             public Vector2 descriptionOffset = Vector2.zero;
+            public string perfectExpression = "Happy";
+            public string failExpression = "Barely";
+            public string unplayedExpression = null;
 
             public Status Register()
             {
@@ -55,7 +58,8 @@ namespace ExtendedStay.Functionality.Level
             private Data Build()
             {
                 return new Data(id, hash, name, act, level, position, character, customCharacter,
-                    levelType, dontUseRank, descriptionOffset);
+                    levelType, dontUseRank, descriptionOffset, perfectExpression, failExpression,
+                    unplayedExpression);
             }
 
             public enum Status
@@ -66,24 +70,9 @@ namespace ExtendedStay.Functionality.Level
             }
         }
 
-        public readonly record struct Data(string id, string hash, string name, string act, string level, Vector2 position,
-            Character character, string customCharacter, LevelType levelType, bool dontUseRank, Vector2 descriptionOffset)
-        {
-            public readonly string id = id;
-            public readonly string hash = hash;
-            public readonly string name = name;
-            public readonly string act = act;
-            public readonly string level = level;
-            public readonly Vector2 position = position;
-
-            public readonly Character character = character;
-            public readonly string customCharacter = customCharacter;
-
-            public readonly LevelType levelType = levelType;
-            public readonly bool dontUseRank = dontUseRank;
-
-            public readonly Vector2 descriptionOffset = descriptionOffset;
-        }
+        public readonly record struct Data(string Id, string Hash, string Name, string Act, string Level, Vector2 Position,
+            Character Character, string CustomCharacter, LevelType LevelType, bool DontUseRank, Vector2 DescriptionOffset,
+            string PerfectExpression, string FailExpression, string UnplayedExpression);
 
         public enum LevelType
         {
