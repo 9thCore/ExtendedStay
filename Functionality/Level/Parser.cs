@@ -9,6 +9,9 @@ namespace ExtendedStay.Functionality.Level
         public override string Identifier => "LEVEL";
 
         [CommentMethod]
+        public void ID(string id) => factory.id = id;
+
+        [CommentMethod]
         public void Hash(string hash) => factory.hash = hash;
 
         [CommentMethod]
@@ -49,6 +52,10 @@ namespace ExtendedStay.Functionality.Level
             {
                 case Storage.Factory.Status.InvalidHash:
                     Plugin.LogError("The level has an invalid hash.");
+                    reason = ParseManager.FailureReason.InvalidEvent;
+                    return false;
+                case Storage.Factory.Status.InvalidID:
+                    Plugin.LogError("The level has an invalid ID.");
                     reason = ParseManager.FailureReason.InvalidEvent;
                     return false;
             }

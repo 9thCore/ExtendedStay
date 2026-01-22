@@ -24,6 +24,7 @@ namespace ExtendedStay.Functionality.Level
 
         public class Factory
         {
+            public string id = null;
             public string hash = null;
             public string name = "Unnamed";
             public string act = "1";
@@ -37,7 +38,12 @@ namespace ExtendedStay.Functionality.Level
 
             public Status Register()
             {
-                if (!Valid())
+                if (id == null)
+                {
+                    return Status.InvalidID;
+                }
+                
+                if (hash == null)
                 {
                     return Status.InvalidHash;
                 }
@@ -46,27 +52,24 @@ namespace ExtendedStay.Functionality.Level
                 return Status.Ok;
             }
 
-            private bool Valid()
-            {
-                return hash != null;
-            }
-
             private Data Build()
             {
-                return new Data(hash, name, act, level, position, character, customCharacter,
+                return new Data(id, hash, name, act, level, position, character, customCharacter,
                     levelType, dontUseRank, descriptionOffset);
             }
 
             public enum Status
             {
                 Ok,
+                InvalidID,
                 InvalidHash
             }
         }
 
-        public readonly record struct Data(string hash, string name, string act, string level, Vector2 position,
+        public readonly record struct Data(string id, string hash, string name, string act, string level, Vector2 position,
             Character character, string customCharacter, LevelType levelType, bool dontUseRank, Vector2 descriptionOffset)
         {
+            public readonly string id = id;
             public readonly string hash = hash;
             public readonly string name = name;
             public readonly string act = act;
