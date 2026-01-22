@@ -22,7 +22,22 @@ namespace ExtendedStay.Functionality.Settings
 
         public void OnLevelLoad(LevelBase level)
         {
-            fieldToSetToDetectTheModIsLoaded?.SetValue(level, GetValueToSetFieldTo());
+            if (fieldToSetToDetectTheModIsLoaded != null)
+            {
+                object value = GetValueToSetFieldTo();
+
+                if (value != null)
+                {
+                    try
+                    {
+                        fieldToSetToDetectTheModIsLoaded.SetValue(level, GetValueToSetFieldTo());
+                    }
+                    catch
+                    {
+                        Plugin.LogError($"Could not set {fieldToSetToDetectTheModIsLoaded.Name}");
+                    }
+                }
+            }
         }
 
         private object GetValueToSetFieldTo()
