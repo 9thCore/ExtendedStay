@@ -6,33 +6,23 @@ namespace ExtendedStay.Functionality.Settings
     {
         public override string Identifier => "SETTINGS";
 
-        public override bool TryParse(string text, out ParseManager.FailureReason reason)
+        protected override void OnStartParse()
         {
-            ParseLines(text);
+            variableName = "b0";
+        }
 
-            while (Advance())
-            {
-                if (!ValidLine)
-                {
-                    continue;
-                }
+        [CommentMethod]
+        public void Variable(string variableName) => this.variableName = variableName;
 
-                switch (Method)
-                {
-                    case "variable":
-                        if (ParameterCount == 1
-                            && TryGetStringParameter(out string variableName))
-                        {
-                            FieldInfo variableField = typeof(LevelBase).GetField(variableName);
-                            Storage.Instance.fieldToSetToDetectTheModIsLoaded = variableField;
-                        }
+        protected override bool TryFinishParse(out ParseManager.FailureReason reason)
+        {
+            FieldInfo variableField = typeof(LevelBase).GetField(variableName);
+            Storage.Instance.fieldToSetToDetectTheModIsLoaded = variableField;
 
-                        break;
-                }
-            }
-
-            reason = default;
+            reason = ParseManager.FailureReason.NoFailure;
             return true;
         }
+
+        private string variableName;
     }
 }
