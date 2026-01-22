@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.Logging;
-using ExtendedStay.Patch;
 using HarmonyLib;
 using System.Reflection;
 
