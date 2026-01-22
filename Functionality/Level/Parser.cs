@@ -1,6 +1,4 @@
-﻿using ExtendedStay.Util;
-using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ExtendedStay.Functionality.Level
 {

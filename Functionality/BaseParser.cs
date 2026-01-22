@@ -107,7 +107,9 @@ namespace ExtendedStay.Functionality
             public readonly string name;
             public readonly MethodInfo method;
             public readonly List<Parameter> parameters = new();
-            public readonly int parameterCount;
+            public readonly int requiredParameterCount;
+            public readonly int totalParameterCount;
+            public readonly int optionalParameterCount;
 
             public CommentMethod(BaseParser instance, string name, MethodInfo method)
             {
@@ -115,55 +117,98 @@ namespace ExtendedStay.Functionality
                 this.name = name;
                 this.method = method;
 
+                requiredParameterCount = 0;
+                optionalParameterCount = 0;
+
                 ParameterInfo[] methodParameters = method.GetParameters();
                 foreach (ParameterInfo parameter in methodParameters)
                 {
+                    Parameter.Data data = new(
+                        Optional: parameter.IsOptional);
+
+                    if (!data.Optional)
+                    {
+                        requiredParameterCount++;
+                    }
+                    else
+                    {
+                        optionalParameterCount++;
+                    }
+
                     Type type = parameter.ParameterType;
                     if (type == typeof(string))
                     {
-                        parameters.Add(new StringParameter());
+                        parameters.Add(new StringParameter(data));
                     }
                     else if (type == typeof(SystemLanguage))
                     {
-                        parameters.Add(new SystemLanguageParameter());
+                        parameters.Add(new SystemLanguageParameter(data));
                     }
                     else if (type == typeof(Character))
                     {
-                        parameters.Add(new CharacterParameter());
+                        parameters.Add(new CharacterParameter(data));
                     }
                     else if (type == typeof(float))
                     {
-                        parameters.Add(new FloatParameter());
+                        parameters.Add(new FloatParameter(data));
                     }
                     else if (type == typeof(LevelStorage.LevelType))
                     {
-                        parameters.Add(new LevelTypeParameter());
+                        parameters.Add(new LevelTypeParameter(data));
                     }
                     else
                     {
                         Plugin.LogError($"DEV: {parameter.Name} has invalid parameter type {type}");
-                        parameters.Add(new InvalidParameter());
+                        parameters.Add(new InvalidParameter(data));
                     }
                 }
 
-                parameterCount = methodParameters.Length;
+                totalParameterCount = requiredParameterCount + optionalParameterCount;
             }
 
             public bool TryInvoke(string[] tokens, out FailureReason reason)
             {
-                if (tokens.Length - 1 != parameterCount)
+                int suppliedParameterCount = tokens.Length - 1;
+
+                if (suppliedParameterCount < requiredParameterCount
+                    || suppliedParameterCount > totalParameterCount)
                 {
-                    int count = tokens.Length - 1;
-                    Plugin.LogError($"Method {name}() requires {parameterCount} parameters, but {count} {(count == 1 ? "was" : "were")} supplied instead");
-                    reason = FailureReason.InvalidParameterCount;
-                    return false;
+                    string supplyText = $"{suppliedParameterCount} {(suppliedParameterCount == 1 ? "was" : "were")}";
+
+                    if (optionalParameterCount == 0)
+                    {
+                        Plugin.LogError($"Method {name}() requires {totalParameterCount} parameters, but {supplyText} supplied instead");
+                        reason = FailureReason.InvalidParameterCount;
+                        return false;
+                    }
+                    else
+                    {
+                        Plugin.LogError($"Method {name}() requires between {requiredParameterCount} and {totalParameterCount} parameters, but {supplyText} supplied instead");
+                        reason = FailureReason.InvalidParameterCount;
+                        return false;
+                    }
                 }
 
-                object[] invokingParameters = new object[parameterCount];
+                object[] invokingParameters = new object[totalParameterCount];
 
                 int index = 0;
+
                 foreach (Parameter parameter in parameters)
                 {
+                    if (index >= suppliedParameterCount)
+                    {
+                        if (!parameter.data.Optional)
+                        {
+                            Plugin.LogError($"Parameter #{index + 1} {parameter.ErrorMessage}");
+                            reason = FailureReason.InvalidParameter;
+                            return false;
+                        }
+
+                        invokingParameters[index] = Type.Missing;
+                        index++;
+                        continue;
+                    }
+
                     if (!parameter.TryParse(tokens[index + 1], out object result))
                     {
                         Plugin.LogError($"Parameter #{index + 1} {parameter.ErrorMessage}");
@@ -180,14 +225,18 @@ namespace ExtendedStay.Functionality
                 return true;
             }
 
-            public abstract record Parameter
+            public abstract record Parameter(Parameter.Data data)
             {
+                public readonly Data data = data;
+
                 public abstract string ErrorMessage { get; }
 
                 public abstract bool TryParse(string token, out object result);
+
+                public readonly record struct Data(bool Optional);
             }
 
-            public record InvalidParameter : Parameter
+            public record InvalidParameter(Parameter.Data data) : Parameter(data)
             {
                 public override string ErrorMessage => "must be some type... that this parser currently does not support!";
 
@@ -198,7 +247,7 @@ namespace ExtendedStay.Functionality
                 }
             }
 
-            public record StringParameter : Parameter
+            public record StringParameter(Parameter.Data data) : Parameter(data)
             {
                 public override string ErrorMessage => "must be a string";
 
@@ -209,7 +258,7 @@ namespace ExtendedStay.Functionality
                 }
             }
 
-            public record SystemLanguageParameter : Parameter
+            public record SystemLanguageParameter(Parameter.Data data) : Parameter(data)
             {
                 public override string ErrorMessage => $"must be a language, one of {EnumUtil.ListValues<SystemLanguage>()}";
 
@@ -226,7 +275,7 @@ namespace ExtendedStay.Functionality
                 }
             }
 
-            public record CharacterParameter : Parameter
+            public record CharacterParameter(Parameter.Data data) : Parameter(data)
             {
                 public override string ErrorMessage => $"must be a character, one of {EnumUtil.ListValues<Character>()}";
 
@@ -243,7 +292,7 @@ namespace ExtendedStay.Functionality
                 }
             }
 
-            public record FloatParameter : Parameter
+            public record FloatParameter(Parameter.Data data) : Parameter(data)
             {
                 public override string ErrorMessage => "must be a float";
 
@@ -260,7 +309,7 @@ namespace ExtendedStay.Functionality
                 }
             }
 
-            public record LevelTypeParameter : Parameter
+            public record LevelTypeParameter(Parameter.Data data) : Parameter(data)
             {
                 public override string ErrorMessage => $"must be a level type, one of {EnumUtil.ListValues<LevelStorage.LevelType>()}";
 
